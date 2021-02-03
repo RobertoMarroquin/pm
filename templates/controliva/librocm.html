@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block tittle %}
+    Compras {{libro.mes}}/{{libro.ano}}
+{% endblock tittle %}
+    
+{% block content %}
+<div class="row justify-content-center">
+<a name="" id="" class="btn btn-primary" href="{% url 'libros' libro.cliente.id 3 %}" role="button">Atras</a>
+</div>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-2">
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="container">
+                    <form>
+                        <div class="form-group row">
+                            <div class="col-sm-1-12">
+                              {{form|crispy}}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="offset-sm-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-10">
+            <table id="tabla" name="tabla" class="table table-ligth">
+                  <thead  class="thead-dark">
+                    <th>Correlativo</th>
+                    <th>Fecha</th>
+                    <th>Proveedor</th>
+                    <th>Compra Exenta Interna</th>
+                    <th>Compra Exenta Importaciones</th>
+                    <th>Compra Gravada Interna</th>
+                    <th>Compra Gravada Importaciones</th>
+                    <th>Compras No Sujetas</th>
+                    <th>IVA Cdto Fiscal</th>
+                    <th>Total Compra</th>
+                    <th>Retencion Pretencion</th>
+                    <th>Anticipo Cta IVA</th>
+                    <th>IVA Terceros</th>
+                  </thead>
+                  <tbody>
+                    {% for fact in facts  %}
+                     <tr>
+                         <td>{{fact.correlativo}}</td>
+                         <td>{{fact.fecha}}</td>
+                         <td>{{fact.empresa}}</td>
+                         <td>{{fact.cExenteInterna}}</td>
+                         <td>{{fact.cExenteImportaciones}}</td>
+                         <td>{{fact.cGravadaInterna}}</td>
+                         <td>{{fact.cGravadaImportaciones}}</td>
+                         <td>{{fact.comprasNSujetas}}</td>
+                         <td>{{fact.ivaCdtoFiscal}}</td>
+                         <td>{{fact.totalCompra}}</td>
+                         <td>{{fact.retencionPretencion}}</td>
+                         <td>{{fact.anticipoCtaIva}}</td>
+                         <td>{{fact.ivaTerceros}}</td>
+
+                     </tr> 
+                    {% endfor %}
+                  </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+  
+
+
+
+{% endblock content %}
+
+
+{% block extrajs %}
+    <script>
+        function totalizado(){
+            total = parseFloat($("#id_ivaCdtoFiscal").val())+ parseFloat($('#id_cExenteInterna').val())+parseFloat($('#id_cExenteImportaciones').val())+parseFloat($('#id_cGravadaInterna').val())+parseFloat($('#id_cGravadaImportaciones').val())+parseFloat($('#id_comprasNSujetas').val())
+            //total = total + 
+            $('#id_totalCompra').val(total.toFixed(2))
+            return $('#id_totalCompra').val()
+        }
+        $('#id_comprasNSujetas').change(()=>{totalizado()})
+        $('#id_ivaCdtoFiscal').change(()=>{totalizado()})
+        $('#id_cExenteInterna').change(()=>{totalizado()})
+        $('#id_cExenteImportaciones').change(()=>{totalizado()})
+        $('#id_cGravadaInterna').change(()=>{
+            event.preventDefault();
+            let cg = $("#id_cGravadaInterna").val()
+            cg = parseFloat(cg).toFixed(2)
+            let ci = $("#id_cGravadaImportaciones").val()
+            ci = parseFloat(ci).toFixed(2)
+            $("#id_ivaCdtoFiscal").val(Math.round(((0.13*(parseFloat(ci)+parseFloat(cg))) * 100)) / 100)
+            totalizado()
+        })
+
+        $('#id_cGravadaImportaciones').change(()=>{
+            event.preventDefault();
+            let cg = $("#id_cGravadaInterna").val()
+            cg = parseFloat(cg).toFixed(2)
+            let ci = $("#id_cGravadaImportaciones").val()
+            ci = parseFloat(ci).toFixed(2)
+            $("#id_ivaCdtoFiscal").val(Math.round(((0.13*(parseFloat(ci)+parseFloat(cg))) * 100)) / 100)
+            totalizado()
+        })
+
+        $('#id_falsaEmpresa').on('change', function(event){
+            event.preventDefault();
+            let id_cont = $('#id_falsaEmpresa').val()
+            var dinamyc =  '/empresa/'+ id_cont+"/"
+            console.log(dinamyc)
+            $.ajax({
+                url: dinamyc,
+                type:'get',
+                datatype:'json',
+                success: function(response){
+                    console.log(response)
+                    $('#id_falsaEmpresa').val(response[0].fields.nombre)
+                    $('#id_empresa').val(response[0].pk)
+                },
+                error:function(error){
+                    console.log(error)
+                    window.open('/empresa/','','width=50, heigth=50, top=100, left=100')
+                }
+            })
+        });
+        $('#id_cExenteInterna').focusout((event)=>{
+            event.preventDefault();
+            let id_cont = $('#id_falsaEmpresa').val()
+            var dinamyc =  '/empresa/'+ id_cont+"/"
+            console.log(dinamyc)
+            $.ajax({
+                url: dinamyc,
+                type:'get',
+                datatype:'json',
+                success: function(response){
+                    console.log(response)
+                    if ($('#id_falsaEmpresa').val()==response[0].fields.nRegistro)
+                        $('#id_falsaEmpresa').val(response[0].fields.nombre)
+                        $('#id_empresa').val(response[0].pk)
+                },
+            })
+        })
+    </script>
+       
+{% endblock extrajs %}
+    

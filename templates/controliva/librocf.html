@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block tittle %}
+    Consumidor Final {{libro.mes}}/{{libro.ano}}
+{% endblock tittle %}
+    
+{% block content %}
+<div class="row justify-content-center">
+<a name="" id="" class="btn btn-primary" href="{% url 'libros' libro.cliente.id 1 %}" role="button">Atras</a>
+</div>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-2">
+            
+                
+            
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="container">
+                    <form>
+                        <div class="form-group row">
+                            <div class="col-sm-1-12">
+                              {{form|crispy}}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="offset-sm-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-10">
+            <table id="tabla" name="tabla" class="table table-ligth">
+                  <thead  class="thead-dark">
+                    <th>Borrar</th>
+                    <th>Correlativo Inicial</th>
+                    <th>Correlativo Final</th>
+                    <th>Fecha</th>
+                    <th>Exento</th>
+                    <th>Locales</th>
+                    <th>Exportaciones</th>
+                    <th>Ventas No Sujetas</th>
+                    <th>Venta Total</th>
+                    <th>Venta Terceros</th>
+                  </thead>
+                  <tbody>
+                    {% for fact in facts  %}
+                     <tr>
+                         <td><form method="POST" action="#">
+                            {% csrf_token %}<input class="btn btn-danger" disabled type="submit"  value="DELETE">
+                         </form></td>
+                         <td>{{fact.correlativoInicial}}</td>
+                         <td>{{fact.correlativoFinal}}</td>
+                         <td>{{fact.fecha}}</td>
+                         <td>{{fact.exento}}</td>
+                         <td>{{fact.locales}}</td>
+                         <td>{{fact.exportaciones}}</td>
+                         <td>{{fact.ventasNSujetas}}</td>
+                         <td>{{fact.ventaTotal}}</td>
+                         <td>{{fact.ventaCtaTerceros}}</td>
+                     </tr> 
+                    {% endfor %}
+                  </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+  
+
+
+
+{% endblock content %}
+
+{% block extrajs %}
+ <script>
+    function totalizado(){
+       total = parseFloat( $('#id_exportaciones').val())+parseFloat($('#id_ventasNSujetas').val())+parseFloat($('#id_locales').val())+parseFloat($('#id_exento').val()) 
+        return total.toFixed(2)
+    } 
+    $('#id_ventasNSujetas').change(()=>{
+        $('#id_ventaTotal').val(totalizado())
+    })
+    $('#id_exportaciones').change(()=>{
+        $('#id_ventaTotal').val(totalizado())
+    })
+    $('#id_locales').change(()=>{
+        $('#id_ventaTotal').val(totalizado())
+    })
+    $('#id_exento').change(()=>{
+        $('#id_ventaTotal').val(totalizado())
+    })
+ </script>
+{% endblock extrajs %}

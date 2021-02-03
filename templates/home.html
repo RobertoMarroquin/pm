@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block tittle %}
+  ContaDGO
+{% endblock tittle %}
+
+
+{% block content %}
+    <div class="container-fluid h-100">
+        <div class="row justify-content-center h-100 text-center">
+            <div class="col-sm-6 my-auto text-center">
+                <a name="" id="" class="btn btn-dark" href="{% url 'clientes' %}" role="button"><i class="fas fa-file-invoice-dollar fa-10x"></i><br>Contabilidad</a>    
+            </div>
+            <div class="col-sm-6 my-auto text-center">
+                <a name="" id="" class="btn btn-dark" href="{% url 'clientes' %}" role="button"><i class="fas fa-file-invoice fa-10x"></i><br>Contro de IVA</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+    

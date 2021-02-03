@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block tittle %}
+    Contribuyente {{libro.mes}}/{{libro.ano}}
+{% endblock tittle %}
+    
+{% block content %}
+<div class="row justify-content-center">
+    <a name="" id="" class="btn btn-primary" href="{% url 'libros' libro.cliente.id 2 %}" role="button">Atras</a>
+</div>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-2">
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="container">
+                    <form>
+                        <div class="form-group row">
+                            <div class="col-sm-1-12">
+                              {{form|crispy}}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="offset-sm-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-10">
+            <table id="tabla" name="tabla" class="table table-ligth">
+                  <thead  class="thead-dark">
+                    <th>Correlativo</th>
+                    <th>Fecha</th>
+                    <th>Numero de Comprobacion</th>
+                    <th>Serie</th>
+                    <th>Correlativo Interno Unico</th>
+                    <th>Empresa</th>
+                    <th>Ventas Exentas</th>
+                    <th>Ventas Gravadas</th>
+                    <th>Ventas No Sujetas</th>
+                    <th>IVA Debito Fiscal</th>
+                    <th>Ventas Terceros Ventas</th>
+                    <th>Ventas Terceros IVA</th>
+                    <th>IVA Retenido</th>
+                    <th>Total</th>
+
+                  </thead>
+                  <tbody>
+                    {% for fact in facts  %}
+                     <tr>
+                         <td>{{fact.correlativo}}</td>
+                         <td>{{fact.fecha}}</td>
+                         <td>{{fact.nComprobacion}}</td>
+                         <td>{{fact.serie}}</td>
+                         <td>{{fact.corrIntUni}}</td>
+                         <td>{{fact.contribuyente}}</td>
+                         <td>{{fact.venExentas}}</td>
+                         <td>{{fact.venGravadas}}</td>
+                         <td>{{fact.ventasNSujetas}}</td>
+                         <td>{{fact.ivaDebFiscal}}</td>
+                         <td>{{fact.vtVentas}}</td>
+                         <td>{{fact.vtIVA}}</td>
+                         <td>{{fact.ivaRetenido}}</td>
+                         <td>{{fact.total}}</td>
+                     </tr> 
+                    {% endfor %}
+                  </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+
+{% block extrajs %}
+<script>
+    var contri; 
+    function totalizado(){
+        suma = parseFloat($("#id_vtIVA").val()) + parseFloat($("#id_ivaDebFiscal").val()) + parseFloat($("#id_venExentas").val()) + parseFloat($("#id_venGravadas").val()) + parseFloat($("#id_ventasNSujetas").val()) + parseFloat($("#id_vtVentas").val()) - parseFloat($("#id_ivaRetenido").val())
+        $('#id_total').val(suma.toFixed(2))
+    }
+
+    $('#id_venGravadas').change(()=>{
+        
+        event.preventDefault();
+        let cg = $("#id_venGravadas").val()
+        cg = parseFloat(cg).toFixed(2)
+        console.log(cg)
+        $("#id_ivaDebFiscal").val((Math.round(((0.13*(parseFloat(cg))) * 100)) / 100).toFixed(2))
+        totalizado()
+    })
+
+    $("#id_ivaDebFiscal").change(()=>{totalizado()})
+    $("#id_vtIVA").change(()=>{totalizado()})
+    $("#id_ivaRetenido").change(()=>{totalizado()})
+    $("#id_venExentas").change(()=>{totalizado()})
+    $("#id_ventasNSujetas").change(()=>{totalizado()})
+    $("#id_vtVentas").change(()=>{
+        totalizado()
+        ivater = $("#id_vtVentas").val() * 0.13
+        $('#id_vtIVA').val(ivater.toFixed(2))
+    })
+
+    $('#id_falsoContribuyente').on('change', function(event){
+        event.preventDefault();
+        let id_cont = $('#id_falsoContribuyente').val()
+        var dinamyc =  '/empresa/'+ id_cont+"/"
+        console.log(dinamyc)
+        $.ajax({
+            url: dinamyc,
+            type:'get',
+            datatype:'json',
+            success: function(response){
+                console.log(response)
+                contri = response
+                $('#id_falsoContribuyente').val(response[0].fields.nombre)
+                $('#id_contribuyente').val(response[0].pk)
+            },
+            error:function(error){
+                console.log(error)
+                window.open('/empresa/','','width=50, heigth=50, top=100, left=100')
+            }
+        })
+    });
+
+    $('#id_venExentas').on('focusout', function(event){
+        event.preventDefault();
+        let id_cont = $('#id_falsoContribuyente').val()
+        var dinamyc =  '/empresa/'+ id_cont+"/"
+        console.log(dinamyc)
+        $.ajax({
+            url: dinamyc,
+            type:'get',
+            datatype:'json',
+            success: function(response){
+                console.log(response)
+                if ($('#id_falsoContribuyente').val()==response[0].fields.nRegistro){ 
+                    $('#id_falsoContribuyente').val(response[0].fields.nombre)
+                    $('#id_contribuyente').val(response[0].pk)
+                }
+            },
+        })
+    });
+
+    
+</script>
+{% endblock extrajs %}

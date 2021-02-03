@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+
+{% block content %}
+<h4>{{object.nombre}}</h4>
+<hr>
+<div class="container">
+    <div class="row">
+        <h5>Info</h5>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-4 align-self-center" >
+            <p>Numero de registro: {{object.nRegistro}}</p>
+        </div>
+        <div class="col-md-4  align-self-center">
+            <p>NIT: {{object.nit}}</p>
+        </div>
+        <div class="col-md-4  align-self-center">
+            <p>Razon Social: {{object.razonSocial}}</p> 
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-4 align-self-center">
+            <p>Actividad Economica 1 : {{object.actEcon1}}</p>
+        </div>
+        <div class="col-md-4 align-self-center">
+            <p>Actividad Economica 2 : {{object.actEcon2}}</p>
+        </div>
+        <div class="col-md-4 align-self-center">
+            <p>Actividad Economica 3 : {{object.actEcon3}}</p>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-4 align-self-center ">
+            <p>Telefono: {{object.telefono}}</p>
+        </div>
+        <div class="col-md-4 align-self-center ">
+            <p>Direccion : {{object.direccion}}</p>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row justify-content-center" >
+        <div class="col-md-3">
+            <a name="" id="" class="btn btn-primary" href="{% url 'libros' object.id 1 %}" role="button">Consumidor Final</a>
+        </div>
+        <div class="col-md-3">
+            <a name="" id="" class="btn btn-primary" href="{% url 'libros' object.id 2 %}" role="button">Contribuyente</a>
+        </div>
+        <div class="col-md-3">
+            <a name="" id="" class="btn btn-primary" href="{% url 'libros' object.id 3 %}" role="button">Compras</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+    

@@ -1,0 +1,49 @@
+
+{% load crispy_forms_tags %}
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-tittle">Crear Cliente</h2>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <form method="POST" action="{% url 'crear_cliente' %}">
+            <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="form-group row">
+                        <div class="col-sm-1-12">
+                            {{form.nRegistro|as_crispy_field}}
+                        </div>
+                        <div class="col-sm-1-12">
+                            {{form.nombre|as_crispy_field}}
+                        </div>
+                        <div class="col-sm-1-12">
+                            {{form.razonSocial|as_crispy_field}}
+                        </div>
+                        <div class="col-sm-1-12">
+                            {{form.nit|as_crispy_field}}
+                        </div>
+                        <div class="col-sm-1-12">
+                            {{form.actEcon1|as_crispy_field}}
+                        </div>
+                        <div class="col-sm-1-12">
+                            {{form.actEcon2|as_crispy_field}}
+                        </div>
+                        <div class="col-sm-1-12">
+                            {{form.actEcon3|as_crispy_field}}
+                        </div>
+                        <div class="col-sm-1-12">
+                            {{form.telefono|as_crispy_field}}
+                        </div>
+                        <div class="col-sm-1-12">
+                            {{form.direccion|as_crispy_field}}
+                        </div>
+                    </div>                
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" type="button" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Crear</button>
+            </div>
+        </form> 
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>

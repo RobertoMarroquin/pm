@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+
+{% block tittle %}
+    Libros
+{% endblock tittle %}
+    
+
+{% block content %}
+<div class="row justify-content-right">
+    <a name="" id="" class="btn btn-primary" href="{% url 'cliente' cliente.id%}" role="button">Atras</a>
+</div>
+<div class="container">
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="form-group row justify-content-center">
+            
+                {{form|crispy}}
+        </div>
+        <div class="row justify-content-center">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+    </form>
+</div>
+<table id="tabla" name="tabla" class="table table-dark">
+    <thead class="thead-dark">
+        <tr>
+            <th>Mes</th>
+            <th>Anyo</th>
+            <th>Exportar</th>
+            <th>Detalle</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+        {% for libro in libros %}
+        <tr>
+                 
+            <td>
+            {% if libro.mes == 1 %}
+                Enero
+            {% elif libro.mes == 2%}
+                Febrero
+                {% elif libro.mes == 3%}
+                Marzo
+                {% elif libro.mes == 4%}
+                Abril
+                {% elif libro.mes == 5%}
+                Mayo
+                {% elif libro.mes == 6%}
+                Junio
+                {% elif libro.mes == 7%}
+                Julio
+                {% elif libro.mes == 8%}
+                Agosto
+                {% elif libro.mes == 9%}
+                Septiembre
+                {% elif libro.mes == 10%}
+                Octubre
+                {% elif libro.mes == 11%}
+                Noviembre
+                {% elif libro.mes == 12%}
+                Diciembre
+            {% endif %}
+            </td>
+            <td>{{libro.ano}}</td>
+            <td>
+                <a name="exportLibro{{libro.id}}" id="exportLibro{{libro.id}}" class="btn btn-success" href="{% url 'export' libro.id libro.tipo %}" role="button">Exportar</a>
+            </td>
+            <td>
+                
+                {% if tipo == 1 %}
+                <a id="detalle {{libro.id}}" class="btn btn-primary" href="{% url 'librocf' cliente.id tipo libro.id%}" role="button">Ver Libros</a>
+                {% elif tipo == 2%}
+                <a id="detalle {{libro.id}}" class="btn btn-primary" href="{% url 'libroct' cliente.id tipo libro.id%}" role="button">Ver Libros</a>
+                {% elif tipo == 3 %}
+                <a id="detalle {{libro.id}}" class="btn btn-primary" href="{% url 'librocm' cliente.id tipo libro.id%}" role="button">Ver Libros</a>
+                {% endif %}  
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
+
+{% endblock content %}
+
+{% block datatablejs %}
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+    $('#tabla').DataTable({
+                    "info": true,
+                    "lengthChange": false,
+                    "pageLength": 10
+                }
+            );
+    } );
+</script>
+{% endblock datatablejs %}
